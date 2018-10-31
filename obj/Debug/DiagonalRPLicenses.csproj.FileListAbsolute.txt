@@ -1,0 +1,7 @@
+C:\Users\nenem\Desktop\Pluginho\DiagonalRPLicenses\DiagonalRPLicenses\bin\Debug\DiagonalRPLicenses.dll
+C:\Users\nenem\Desktop\Pluginho\DiagonalRPLicenses\DiagonalRPLicenses\bin\Debug\DiagonalRPLicenses.pdb
+C:\Users\nenem\Desktop\Pluginho\DiagonalRPLicenses\DiagonalRPLicenses\obj\Debug\DiagonalRPLicenses.csprojAssemblyReference.cache
+C:\Users\nenem\Desktop\Pluginho\DiagonalRPLicenses\DiagonalRPLicenses\obj\Debug\DiagonalRPLicenses.csproj.CoreCompileInputs.cache
+C:\Users\nenem\Desktop\Pluginho\DiagonalRPLicenses\DiagonalRPLicenses\obj\Debug\DiagonalRPLicenses.csproj.CopyComplete
+C:\Users\nenem\Desktop\Pluginho\DiagonalRPLicenses\DiagonalRPLicenses\obj\Debug\DiagonalRPLicenses.dll
+C:\Users\nenem\Desktop\Pluginho\DiagonalRPLicenses\DiagonalRPLicenses\obj\Debug\DiagonalRPLicenses.pdb
