@@ -8,6 +8,7 @@ using System.Linq;
 using Rocket.API.Collections;
 using Rocket.API;
 using System;
+using Rocket.Unturned;
 
 namespace Diagonal.RPLicenses
 {
@@ -35,6 +36,8 @@ namespace Diagonal.RPLicenses
 
             UnturnedPlayerEvents.OnPlayerInventoryAdded += OnInventoryUpdated;
             UnturnedPlayerEvents.OnPlayerUpdateStance += OnPlayerUpdateStance;
+            U.Events.OnPlayerConnected += Events_OnPlayerConnected;
+            U.Events.OnPlayerDisconnected += Events_OnPlayerDisconnected;
 
             #region WriteLoad
             if (Configuration.Instance.VehicleLicense)
@@ -58,6 +61,24 @@ namespace Diagonal.RPLicenses
             {
                 Write("Vehicle License: Disabled", ConsoleColor.Red);
             }
+
+            if (Configuration.Instance.DisableLicensesOnGroupOnline)
+            {
+                Write("Disable Licenses On Group Online: Enabled", ConsoleColor.Green);
+                Write($"Disable Licenses Permission: {Configuration.Instance.DisableLicensesPermission}", ConsoleColor.DarkGreen);
+                if (Configuration.Instance.LicensesMessage)
+                {
+                    Write("Licenses Message: Enabled", ConsoleColor.Green);
+                }
+                else
+                {
+                    Write("Licenses Message: Disabled", ConsoleColor.Red);
+                }
+            }
+            else
+            {
+                Write("DisableLicenses On Group Online: Disabled", ConsoleColor.Red);
+            }
             #endregion
         }
 
@@ -67,6 +88,8 @@ namespace Diagonal.RPLicenses
 
             UnturnedPlayerEvents.OnPlayerInventoryAdded -= OnInventoryUpdated;
             UnturnedPlayerEvents.OnPlayerUpdateStance -= OnPlayerUpdateStance;
+            U.Events.OnPlayerConnected -= Events_OnPlayerConnected;
+            U.Events.OnPlayerDisconnected -= Events_OnPlayerDisconnected;
         }
         #endregion
 
@@ -94,6 +117,19 @@ namespace Diagonal.RPLicenses
                     for (byte index = 0; index < count; index++)
                     {
                         if (player.Inventory.getItem(page, index).item.id == Instance.Configuration.Instance.WeaponLicenseID)
+                        {
+                            return;
+                        }
+                    }
+                }
+
+                if (Configuration.Instance.DisableLicensesOnGroupOnline)
+                {
+                    foreach (var steamPlayer in Provider.clients)
+                    {
+                        UnturnedPlayer Players = UnturnedPlayer.FromSteamPlayer(steamPlayer);
+
+                        if (Players.HasPermission(Configuration.Instance.DisableLicensesPermission))
                         {
                             return;
                         }
@@ -135,6 +171,19 @@ namespace Diagonal.RPLicenses
                     }
                 }
 
+                if (Configuration.Instance.DisableLicensesOnGroupOnline)
+                {
+                    foreach (var steamPlayer in Provider.clients)
+                    {
+                        UnturnedPlayer Players = UnturnedPlayer.FromSteamPlayer(steamPlayer);
+
+                        if (Players.HasPermission(Configuration.Instance.DisableLicensesPermission))
+                        {
+                            return;
+                        }
+                    }
+                }
+
                 player.CurrentVehicle.getExit(0, out var exitPoint, out var exitAngle);
                 VehicleManager.sendExitVehicle(player.CurrentVehicle, 0, exitPoint, exitAngle, false);
                 UnturnedChat.Say(player, Translate("no_vehicle_license"));
@@ -143,12 +192,80 @@ namespace Diagonal.RPLicenses
 
         #endregion
 
+        #region Player Connected
+        private void Events_OnPlayerConnected(UnturnedPlayer player)
+        {
+            if (Configuration.Instance.DisableLicensesOnGroupOnline)
+            {
+                var SteamID = ((UnturnedPlayer)player).CSteamID;
+                foreach (var steamPlayer in Provider.clients)
+                {
+                    if (player.IsAdmin)
+                    {
+                        return;
+                    }
+
+                    if (steamPlayer.playerID.steamID == SteamID && player.HasPermission(Configuration.Instance.DisableLicensesPermission))
+                    {
+                        if (Configuration.Instance.LicensesMessage)
+                        {
+                            UnturnedChat.Say(Translate("licenses_on"));
+                        }
+                        continue;
+                    }
+
+                    UnturnedPlayer Players = UnturnedPlayer.FromSteamPlayer(steamPlayer);
+
+                    if (Players.HasPermission(Configuration.Instance.DisableLicensesPermission))
+                    {
+                        return;
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region Player Disconnected
+        private void Events_OnPlayerDisconnected(UnturnedPlayer player)
+        {
+            if (Configuration.Instance.DisableLicensesOnGroupOnline)
+            {
+                var SteamID = ((UnturnedPlayer)player).CSteamID;
+                foreach (var steamPlayer in Provider.clients)
+                {
+                    if (player.IsAdmin)
+                    {
+                        return;
+                    }
+
+                    if (steamPlayer.playerID.steamID == SteamID && player.HasPermission(Configuration.Instance.DisableLicensesPermission))
+                    {
+                        if (Configuration.Instance.LicensesMessage)
+                        {
+                            UnturnedChat.Say(Translate("licenses_off"));
+                        }
+                        continue;
+                    }
+
+                    UnturnedPlayer Players = UnturnedPlayer.FromSteamPlayer(steamPlayer);
+
+                    if (Players.HasPermission(Configuration.Instance.DisableLicensesPermission))
+                    {
+                        return;
+                    }
+                }
+            }
+        }
+        #endregion
+
         #region Translate
         public override TranslationList DefaultTranslations =>
             new TranslationList
             {
                 { "no_weapon_license", "You do not have a license to use this weapon!" },
-                { "no_vehicle_license", "You do not have a license to drive this vehicle!" }
+                { "no_vehicle_license", "You do not have a license to drive this vehicle!" },
+                { "licenses_on", "Disabled Licenses!" },
+                { "licenses_off", "Enabled Licenses!" }
             };
         #endregion
     }
