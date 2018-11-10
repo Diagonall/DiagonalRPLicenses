@@ -36,8 +36,8 @@ namespace Diagonal.RPLicenses
 
             UnturnedPlayerEvents.OnPlayerInventoryAdded += OnInventoryUpdated;
             UnturnedPlayerEvents.OnPlayerUpdateStance += OnPlayerUpdateStance;
-            U.Events.OnPlayerConnected += Events_OnPlayerConnected;
             U.Events.OnPlayerDisconnected += Events_OnPlayerDisconnected;
+            U.Events.OnPlayerConnected += Events_OnPlayerConnected;
 
             #region WriteLoad
             if (Configuration.Instance.VehicleLicense)
@@ -88,8 +88,8 @@ namespace Diagonal.RPLicenses
 
             UnturnedPlayerEvents.OnPlayerInventoryAdded -= OnInventoryUpdated;
             UnturnedPlayerEvents.OnPlayerUpdateStance -= OnPlayerUpdateStance;
-            U.Events.OnPlayerConnected -= Events_OnPlayerConnected;
             U.Events.OnPlayerDisconnected -= Events_OnPlayerDisconnected;
+            U.Events.OnPlayerConnected -= Events_OnPlayerConnected;
         }
         #endregion
 
