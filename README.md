@@ -1,3 +1,3 @@
 # DiagonalRPLicenses
 
-Adds Licenses to the server
+Adds Licenses to your server
