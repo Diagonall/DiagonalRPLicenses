@@ -200,6 +200,7 @@ namespace Diagonal.RPLicenses
                 var SteamID = ((UnturnedPlayer)player).CSteamID;
                 foreach (var steamPlayer in Provider.clients)
                 {
+
                     if (player.IsAdmin)
                     {
                         return;
