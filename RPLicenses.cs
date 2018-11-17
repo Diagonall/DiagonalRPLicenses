@@ -10,6 +10,7 @@ using Rocket.API;
 using System;
 using Rocket.Unturned;
 using System.Collections;
+using UnityEngine;
 
 namespace Diagonal.RPLicenses
 {
@@ -157,13 +158,13 @@ namespace Diagonal.RPLicenses
                 if (Configuration.Instance.DropOnTake)
                 {
                     player.Inventory.askDropItem(player.CSteamID, (byte)inventoryGroup, P.x, P.y);
-                    UnturnedChat.Say(player, Translate("no_weapon_license"));
+                    UnturnedChat.Say(player, Translate("no_weapon_license"), Color.red);
                 }
                 else
                 {
-                    UnturnedChat.Say(player, Translate("carrying_no_license"));
-                    UnturnedChat.Say(player, Translate("carrying_no_license"));
-                    UnturnedChat.Say(player, Translate("carrying_no_license"));
+                    UnturnedChat.Say(player, Translate("carrying_no_license"), Color.red);
+                    UnturnedChat.Say(player, Translate("carrying_no_license"), Color.red);
+                    UnturnedChat.Say(player, Translate("carrying_no_license"), Color.red);
                 }
             }
         }
@@ -215,13 +216,13 @@ namespace Diagonal.RPLicenses
                 {
                     player.CurrentVehicle.getExit(0, out var exitPoint, out var exitAngle);
                     VehicleManager.sendExitVehicle(player.CurrentVehicle, 0, exitPoint, exitAngle, false);
-                    UnturnedChat.Say(player, Translate("no_vehicle_license"));
+                    UnturnedChat.Say(player, Translate("no_vehicle_license"), Color.red);
                 }
                 else
                 {
-                    UnturnedChat.Say(player, Translate("driving_no_license"));
-                    UnturnedChat.Say(player, Translate("driving_no_license"));
-                    UnturnedChat.Say(player, Translate("driving_no_license"));
+                    UnturnedChat.Say(player, Translate("driving_no_license"), Color.red);
+                    UnturnedChat.Say(player, Translate("driving_no_license"), Color.red);
+                    UnturnedChat.Say(player, Translate("driving_no_license"), Color.red);
                 }
             }
         }
@@ -246,7 +247,7 @@ namespace Diagonal.RPLicenses
                     {
                         if (Configuration.Instance.LicensesMessage)
                         {
-                            UnturnedChat.Say(Translate("licenses_off"));
+                            UnturnedChat.Say(Translate("licenses_off"), Color.red);
                         }
                         continue;
                     }
@@ -279,7 +280,7 @@ namespace Diagonal.RPLicenses
                     {
                         if (Configuration.Instance.LicensesMessage)
                         {
-                            UnturnedChat.Say(Translate("licenses_on"));
+                            UnturnedChat.Say(Translate("licenses_on"), Color.green);
                         }
                         continue;
                     }
