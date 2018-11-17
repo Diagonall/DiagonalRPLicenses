@@ -9,6 +9,7 @@ using Rocket.API.Collections;
 using Rocket.API;
 using System;
 using Rocket.Unturned;
+using System.Collections;
 
 namespace Diagonal.RPLicenses
 {
@@ -45,6 +46,14 @@ namespace Diagonal.RPLicenses
                 Write("Vehicle License: Enabled", ConsoleColor.Green);
                 Write($"Vehicle License Permission: {Configuration.Instance.VehicleLicensePermission}", ConsoleColor.DarkGreen);
                 Write($"Vehicle License ID: {Configuration.Instance.VehicleLicenseID}", ConsoleColor.DarkGreen);
+                if (Configuration.Instance.KickOnEnter)
+                {
+                    Write("Kick On Enter: Enabled", ConsoleColor.Green);
+                }
+                else
+                {
+                    Write("Kick On Enter: Disabled", ConsoleColor.Red);
+                }
             }
             else
             {
@@ -56,6 +65,15 @@ namespace Diagonal.RPLicenses
                 Write("Weapon License: Enabled", ConsoleColor.Green);
                 Write($"Weapon License Permission: {Configuration.Instance.WeaponLicensePermission}", ConsoleColor.DarkGreen);
                 Write($"Weapon License ID: {Configuration.Instance.WeaponLicenseID}", ConsoleColor.DarkGreen);
+
+                if (Configuration.Instance.DropOnTake)
+                {
+                    Write("Drop On Take: Enabled", ConsoleColor.Green);
+                }
+                else
+                {
+                    Write("Drop On Take: Disabled", ConsoleColor.Red);
+                }
             }
             else
             {
@@ -136,8 +154,17 @@ namespace Diagonal.RPLicenses
                     }
                 }
 
-                player.Inventory.askDropItem(player.CSteamID, (byte)inventoryGroup, P.x, P.y);
-                UnturnedChat.Say(player, Translate("no_weapon_license"));
+                if (Configuration.Instance.DropOnTake)
+                {
+                    player.Inventory.askDropItem(player.CSteamID, (byte)inventoryGroup, P.x, P.y);
+                    UnturnedChat.Say(player, Translate("no_weapon_license"));
+                }
+                else
+                {
+                    UnturnedChat.Say(player, Translate("carrying_no_license"));
+                    UnturnedChat.Say(player, Translate("carrying_no_license"));
+                    UnturnedChat.Say(player, Translate("carrying_no_license"));
+                }
             }
         }
         #endregion
@@ -184,9 +211,18 @@ namespace Diagonal.RPLicenses
                     }
                 }
 
-                player.CurrentVehicle.getExit(0, out var exitPoint, out var exitAngle);
-                VehicleManager.sendExitVehicle(player.CurrentVehicle, 0, exitPoint, exitAngle, false);
-                UnturnedChat.Say(player, Translate("no_vehicle_license"));
+                if (Configuration.Instance.KickOnEnter)
+                {
+                    player.CurrentVehicle.getExit(0, out var exitPoint, out var exitAngle);
+                    VehicleManager.sendExitVehicle(player.CurrentVehicle, 0, exitPoint, exitAngle, false);
+                    UnturnedChat.Say(player, Translate("no_vehicle_license"));
+                }
+                else
+                {
+                    UnturnedChat.Say(player, Translate("driving_no_license"));
+                    UnturnedChat.Say(player, Translate("driving_no_license"));
+                    UnturnedChat.Say(player, Translate("driving_no_license"));
+                }
             }
         }
 
@@ -265,6 +301,8 @@ namespace Diagonal.RPLicenses
             {
                 { "no_weapon_license", "You do not have a license to use this weapon!" },
                 { "no_vehicle_license", "You do not have a license to drive this vehicle!" },
+                { "driving_no_license", "You're driving without a license!" },
+                { "carrying_no_license", "You're carrying a gun without a license!" },
                 { "licenses_on", "Disabled Licenses!" },
                 { "licenses_off", "Enabled Licenses!" }
             };
