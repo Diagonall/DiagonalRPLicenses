@@ -210,7 +210,7 @@ namespace Diagonal.RPLicenses
                     {
                         if (Configuration.Instance.LicensesMessage)
                         {
-                            UnturnedChat.Say(Translate("licenses_on"));
+                            UnturnedChat.Say(Translate("licenses_off"));
                         }
                         continue;
                     }
@@ -243,7 +243,7 @@ namespace Diagonal.RPLicenses
                     {
                         if (Configuration.Instance.LicensesMessage)
                         {
-                            UnturnedChat.Say(Translate("licenses_off"));
+                            UnturnedChat.Say(Translate("licenses_on"));
                         }
                         continue;
                     }
