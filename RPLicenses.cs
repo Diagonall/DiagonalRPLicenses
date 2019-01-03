@@ -124,7 +124,7 @@ namespace Diagonal.RPLicenses
                     return;
                 }
 
-                if (player.IsAdmin)
+                if (player.IsAdmin && Instance.Configuration.Instance.IgnoreAdmin)
                 {
                     return;
                 }
@@ -176,12 +176,17 @@ namespace Diagonal.RPLicenses
             if (stance == 6 && Configuration.Instance.VehicleLicense)
             {
 
-                if (player.IsAdmin)
+                if (player.IsAdmin && Instance.Configuration.Instance.IgnoreAdmin)
                 {
                     return;
                 }
 
                 if (player.HasPermission(Instance.Configuration.Instance.VehicleLicensePermission))
+                {
+                    return;
+                }
+
+                if (player.CurrentVehicle.asset.id == 185)
                 {
                     return;
                 }

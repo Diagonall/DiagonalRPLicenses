@@ -9,6 +9,7 @@ namespace Diagonal.RPLicenses
         [XmlArrayItem(ElementName = "WeaponID")]
         public List<LicensedWeapon> Licensed;
 
+        public bool IgnoreAdmin;
         public bool LicensesMessage;
         public bool DisableLicensesOnGroupOnline;
         public string DisableLicensesPermission;
@@ -30,6 +31,7 @@ namespace Diagonal.RPLicenses
                 new LicensedWeapon { Id = 297 }
             };
 
+            IgnoreAdmin = true;
             LicensesMessage = true;
             DisableLicensesOnGroupOnline = true;
             DisableLicensesPermission = "license.disable";
