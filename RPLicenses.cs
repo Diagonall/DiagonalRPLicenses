@@ -219,8 +219,7 @@ namespace Diagonal.RPLicenses
 
                 if (Configuration.Instance.KickOnEnter)
                 {
-                    player.CurrentVehicle.getExit(0, out var exitPoint, out var exitAngle);
-                    VehicleManager.sendExitVehicle(player.CurrentVehicle, 0, exitPoint, exitAngle, false);
+                    VehicleManager.sendExitVehicle(player.CurrentVehicle, 0, player.Position, 0, false);
                     UnturnedChat.Say(player, Translate("no_vehicle_license"), Color.red);
                 }
                 else
