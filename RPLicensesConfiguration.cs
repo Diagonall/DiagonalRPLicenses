@@ -14,11 +14,11 @@ namespace Diagonal.RPLicenses
         public bool DisableLicensesOnGroupOnline;
         public string DisableLicensesPermission;
         public bool WeaponLicense;
-        public bool DropOnTake;
+        public bool DontLetGetWeapon;
         public int WeaponLicenseID;
         public string WeaponLicensePermission;
         public bool VehicleLicense;
-        public bool KickOnEnter;
+        public bool DontLetInVehicle;
         public int VehicleLicenseID;
         public string VehicleLicensePermission;
 
@@ -36,11 +36,11 @@ namespace Diagonal.RPLicenses
             DisableLicensesOnGroupOnline = true;
             DisableLicensesPermission = "license.disable";
             WeaponLicense = true;
-            DropOnTake = true;
+            DontLetGetWeapon = true;
             WeaponLicenseID = 42504;
             WeaponLicensePermission = "license.weapon";
             VehicleLicense = true;
-            KickOnEnter = true;
+            DontLetInVehicle = true;
             VehicleLicenseID = 42503;
             VehicleLicensePermission = "license.vehicle";
         }

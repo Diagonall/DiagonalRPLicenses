@@ -36,8 +36,8 @@ namespace Diagonal.RPLicenses
         {
             Instance = this;
 
-            UnturnedPlayerEvents.OnPlayerInventoryAdded += OnInventoryUpdated;
-            UnturnedPlayerEvents.OnPlayerUpdateStance += OnPlayerUpdateStance;
+            ItemManager.onTakeItemRequested += onTakeItemRequested;
+            VehicleManager.onEnterVehicleRequested += VehicleManager_onEnterVehicleRequested;
             U.Events.OnPlayerDisconnected += Events_OnPlayerDisconnected;
             U.Events.OnPlayerConnected += Events_OnPlayerConnected;
 
@@ -47,7 +47,7 @@ namespace Diagonal.RPLicenses
                 Write("Vehicle License: Enabled", ConsoleColor.Green);
                 Write($"Vehicle License Permission: {Configuration.Instance.VehicleLicensePermission}", ConsoleColor.DarkGreen);
                 Write($"Vehicle License ID: {Configuration.Instance.VehicleLicenseID}", ConsoleColor.DarkGreen);
-                if (Configuration.Instance.KickOnEnter)
+                if (Configuration.Instance.DontLetInVehicle)
                 {
                     Write("Kick On Enter: Enabled", ConsoleColor.Green);
                 }
@@ -67,7 +67,7 @@ namespace Diagonal.RPLicenses
                 Write($"Weapon License Permission: {Configuration.Instance.WeaponLicensePermission}", ConsoleColor.DarkGreen);
                 Write($"Weapon License ID: {Configuration.Instance.WeaponLicenseID}", ConsoleColor.DarkGreen);
 
-                if (Configuration.Instance.DropOnTake)
+                if (Configuration.Instance.DontLetGetWeapon)
                 {
                     Write("Drop On Take: Enabled", ConsoleColor.Green);
                 }
@@ -105,17 +105,19 @@ namespace Diagonal.RPLicenses
         {
             Instance = null;
 
-            UnturnedPlayerEvents.OnPlayerInventoryAdded -= OnInventoryUpdated;
-            UnturnedPlayerEvents.OnPlayerUpdateStance -= OnPlayerUpdateStance;
+            ItemManager.onTakeItemRequested += onTakeItemRequested;
+            VehicleManager.onEnterVehicleRequested -= VehicleManager_onEnterVehicleRequested;
             U.Events.OnPlayerDisconnected -= Events_OnPlayerDisconnected;
             U.Events.OnPlayerConnected -= Events_OnPlayerConnected;
         }
         #endregion
 
         #region Weapon License
-        private void OnInventoryUpdated(UnturnedPlayer player, InventoryGroup inventoryGroup, byte inventoryIndex, ItemJar P)
+
+        private void onTakeItemRequested(Player Pplayer, byte x, byte y, uint instanceID, byte to_x, byte to_y, byte to_rot, byte to_page, ItemData itemData, ref bool shouldAllow)
         {
-            LicensedWeapon weapon = Configuration.Instance.Licensed.FirstOrDefault(x => x.Id == P.item.id);
+            UnturnedPlayer player = UnturnedPlayer.FromPlayer(Pplayer);
+            LicensedWeapon weapon = Configuration.Instance.Licensed.FirstOrDefault(w => w.Id == itemData.item.id);
 
             if (weapon != null && Configuration.Instance.WeaponLicense)
             {
@@ -155,9 +157,9 @@ namespace Diagonal.RPLicenses
                     }
                 }
 
-                if (Configuration.Instance.DropOnTake)
+                if (Configuration.Instance.DontLetGetWeapon)
                 {
-                    player.Inventory.askDropItem(player.CSteamID, (byte)inventoryGroup, P.x, P.y);
+                    shouldAllow = false;
                     UnturnedChat.Say(player, Translate("no_weapon_license"), Color.red);
                 }
                 else
@@ -171,11 +173,12 @@ namespace Diagonal.RPLicenses
         #endregion
 
         #region Vehicle License
-        private void OnPlayerUpdateStance(UnturnedPlayer player, byte stance)
+        private void VehicleManager_onEnterVehicleRequested(Player Pplayer, InteractableVehicle vehicle, ref bool shouldAllow)
         {
-            if (stance == 6 && Configuration.Instance.VehicleLicense)
-            {
+            UnturnedPlayer player = UnturnedPlayer.FromPlayer(Pplayer);
 
+            if (Configuration.Instance.VehicleLicense)
+            {
                 if (player.IsAdmin && Instance.Configuration.Instance.IgnoreAdmin)
                 {
                     return;
@@ -186,7 +189,7 @@ namespace Diagonal.RPLicenses
                     return;
                 }
 
-                if (player.CurrentVehicle.asset.id == 185)
+                if (vehicle.asset.id == 185)
                 {
                     return;
                 }
@@ -217,9 +220,9 @@ namespace Diagonal.RPLicenses
                     }
                 }
 
-                if (Configuration.Instance.KickOnEnter)
+                if (Configuration.Instance.DontLetInVehicle)
                 {
-                    VehicleManager.sendExitVehicle(player.CurrentVehicle, 0, player.Position, 0, false);
+                    shouldAllow = false;
                     UnturnedChat.Say(player, Translate("no_vehicle_license"), Color.red);
                 }
                 else
@@ -230,7 +233,6 @@ namespace Diagonal.RPLicenses
                 }
             }
         }
-
         #endregion
 
         #region Player Connected
@@ -238,7 +240,7 @@ namespace Diagonal.RPLicenses
         {
             if (Configuration.Instance.DisableLicensesOnGroupOnline)
             {
-                var SteamID = ((UnturnedPlayer)player).CSteamID;
+                var SteamID = player.CSteamID;
                 foreach (var steamPlayer in Provider.clients)
                 {
 
@@ -272,7 +274,7 @@ namespace Diagonal.RPLicenses
         {
             if (Configuration.Instance.DisableLicensesOnGroupOnline)
             {
-                var SteamID = ((UnturnedPlayer)player).CSteamID;
+                var SteamID = player.CSteamID;
                 foreach (var steamPlayer in Provider.clients)
                 {
                     if (player.IsAdmin)
